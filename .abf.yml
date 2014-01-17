@@ -1,2 +1,5 @@
 sources:
   jgit-3.1.0.201310021548-r.tar.bz2: faeda45f9176a44d2835895b3e5c7cc617df4855
+  eclipse-jgit-3.1.0-1.0-omv2014.0.noarch.rpm: aa4287cf826aa46b16cd20cac2d2b972cfbb6491
+  jgit-3.1.0-1.0-omv2014.0.noarch.rpm: 86a3deda406cc990722de0070a6fcaf21a2f2e05
+  jgit-javadoc-3.1.0-1.0-omv2014.0.noarch.rpm: 13183a4b0b79e4ca517d5b82efc212dfece7e02c

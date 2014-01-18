@@ -1,1590 +1,314 @@
+%{?_javapackages_macros:%_javapackages_macros}
+%global install_loc    %{_datadir}/eclipse/dropins/jgit
+%global version_suffix 201310021548-r
 
-%undefine _compress
-%undefine _extension
-%global _duplicate_files_terminate_build 0
-%global _files_listed_twice_terminate_build 0
-%global _unpackaged_files_terminate_build 0
-%global _nonzero_exit_pkgcheck_terminate_build 0
-%global _use_internal_dependency_generator 0
-%global __find_requires /bin/sed -e 's/.*//'
-%global __find_provides /bin/sed -e 's/.*//'
+%{?scl:%scl_package eclipse-jgit}
+%{!?scl:%global pkg_name %{name}}
 
-Name:		eclipse-jgit
-Version:	3.1.0
-Release:	1.0
-License:	GPLv3+
-Source0:	eclipse-jgit-3.1.0-1.0-omv2014.0.noarch.rpm
-Source1:	jgit-3.1.0-1.0-omv2014.0.noarch.rpm
-Source2:	jgit-javadoc-3.1.0-1.0-omv2014.0.noarch.rpm
 
-URL:		https://abf.rosalinux.ru/openmandriva/eclipse-jgit
-BuildArch:	noarch
-Summary:	eclipse-jgit bootstrap version
-Requires:	javapackages-bootstrap
-Requires:	eclipse-platform >= 3.5.0
-Requires:	javaewah
-Requires:	osgi(com.jcraft.jsch)
-Provides:	eclipse-jgit = 3.1.0-1.0:2014.0
-Provides:	osgi(org.apache.commons.compress) = 1.6.0
-Provides:	osgi(org.eclipse.jgit) = 3.1.0
-Provides:	osgi(org.eclipse.jgit.archive) = 3.1.0
+Name:           %{?scl_prefix}eclipse-jgit
+Version:        3.1.0
+Release:        1.0%{?dist}
+Summary:        Eclipse JGit
+
+
+License:        BSD
+URL:            http://www.eclipse.org/egit/
+Source0:        http://git.eclipse.org/c/jgit/jgit.git/snapshot/jgit-%{version}.%{version_suffix}.tar.bz2
+Patch0:         fix_jgit_sh.patch
+Patch1:			eclipse-jgit-413163.patch
+
+BuildArch: noarch
+
+BuildRequires: java-devel
+BuildRequires: %{?scl_prefix}eclipse-pde >= 1:3.5.0
+BuildRequires:  jpackage-utils
+BuildRequires:  maven-local
+BuildRequires:  maven-compiler-plugin
+BuildRequires:  maven-install-plugin
+BuildRequires:  maven-jar-plugin
+BuildRequires:  maven-javadoc-plugin
+BuildRequires:  maven-release-plugin
+BuildRequires:  maven-resources-plugin
+BuildRequires:  maven-surefire-plugin
+BuildRequires:  maven-surefire-provider-junit
+BuildRequires:  maven-shade-plugin
+BuildRequires:  tycho
+BuildRequires:  eclipse-equinox-osgi
+BuildRequires:  eclipse-platform
+BuildRequires:  args4j >= 2.0.12
+BuildRequires:  apache-commons-compress
+BuildRequires:  xz-java >= 1.1-2
+BuildRequires:  javaewah
+BuildRequires:  mvn(org.codehaus.mojo:build-helper-maven-plugin)
+BuildRequires:  feclipse-maven-plugin >= 0.0.3
+%{?scl:Requires: %scl_runtime}
+Requires: %{?scl_prefix}eclipse-platform >= 3.5.0
+Requires:  javaewah
 
 %description
-eclipse-jgit bootstrap version.
+A pure Java implementation of the Git version control system.
 
-%files
-/usr/share/doc/eclipse-jgit
-/usr/share/doc/eclipse-jgit/LICENSE
-/usr/share/doc/eclipse-jgit/README.md
-/usr/share/eclipse/dropins/jgit
-/usr/share/eclipse/dropins/jgit/eclipse
-/usr/share/eclipse/dropins/jgit/eclipse/features
-/usr/share/eclipse/dropins/jgit/eclipse/features/org.eclipse.jgit_3.1.0.201310021548-r
-/usr/share/eclipse/dropins/jgit/eclipse/features/org.eclipse.jgit_3.1.0.201310021548-r/META-INF
-/usr/share/eclipse/dropins/jgit/eclipse/features/org.eclipse.jgit_3.1.0.201310021548-r/META-INF/MANIFEST.MF
-/usr/share/eclipse/dropins/jgit/eclipse/features/org.eclipse.jgit_3.1.0.201310021548-r/META-INF/maven
-/usr/share/eclipse/dropins/jgit/eclipse/features/org.eclipse.jgit_3.1.0.201310021548-r/META-INF/maven/org.eclipse.jgit.feature
-/usr/share/eclipse/dropins/jgit/eclipse/features/org.eclipse.jgit_3.1.0.201310021548-r/META-INF/maven/org.eclipse.jgit.feature/org.eclipse.jgit
-/usr/share/eclipse/dropins/jgit/eclipse/features/org.eclipse.jgit_3.1.0.201310021548-r/META-INF/maven/org.eclipse.jgit.feature/org.eclipse.jgit/pom.properties
-/usr/share/eclipse/dropins/jgit/eclipse/features/org.eclipse.jgit_3.1.0.201310021548-r/META-INF/maven/org.eclipse.jgit.feature/org.eclipse.jgit/pom.xml
-/usr/share/eclipse/dropins/jgit/eclipse/features/org.eclipse.jgit_3.1.0.201310021548-r/edl-v10.html
-/usr/share/eclipse/dropins/jgit/eclipse/features/org.eclipse.jgit_3.1.0.201310021548-r/feature.properties
-/usr/share/eclipse/dropins/jgit/eclipse/features/org.eclipse.jgit_3.1.0.201310021548-r/feature.xml
-/usr/share/eclipse/dropins/jgit/eclipse/features/org.eclipse.jgit_3.1.0.201310021548-r/license.html
-/usr/share/eclipse/dropins/jgit/eclipse/plugins
-/usr/share/eclipse/dropins/jgit/eclipse/plugins/JavaEWAH.jar
-/usr/share/eclipse/dropins/jgit/eclipse/plugins/args4j.jar
-/usr/share/eclipse/dropins/jgit/eclipse/plugins/commons-compress.jar
-/usr/share/eclipse/dropins/jgit/eclipse/plugins/org.apache.commons.compress_1.6.0.jar
-/usr/share/eclipse/dropins/jgit/eclipse/plugins/org.eclipse.jgit-3.1.0.201310021548-r.jar
-/usr/share/eclipse/dropins/jgit/eclipse/plugins/org.eclipse.jgit.archive_3.1.0.201310021548-r.jar
-/usr/share/eclipse/dropins/jgit/eclipse/plugins/org.eclipse.jgit_3.1.0.201310021548-r.jar
-/usr/share/eclipse/dropins/jgit/eclipse/plugins/xz-java.jar
+%package -n     %{?scl_prefix}jgit-javadoc
+Summary:        API documentation for %{pkg_name}
 
-#------------------------------------------------------------------------
-%package	-n jgit
-Version:	3.1.0
-Release:	1.0
-Summary:	jgit bootstrap version
-Requires:	javapackages-bootstrap
-Requires:	apache-commons-compress
-Requires:	args4j >= 2.0.12
-Requires:	java >= 1.6.0
-Requires:	javaewah
-Requires:	jpackage-utils
-Requires:	osgi(com.jcraft.jsch)
-Requires:	xz-java >= 1.1-2
-Provides:	jgit = 3.1.0-1.0:2014.0
-Provides:	mvn(org.eclipse.jgit:org.eclipse.jgit) = 3.1.0.201310021548-r
-Provides:	mvn(org.eclipse.jgit:org.eclipse.jgit-parent) = 3.1.0.201310021548-r
-Provides:	mvn(org.eclipse.jgit:org.eclipse.jgit-parent:pom:) = 3.1.0.201310021548-r
-Provides:	mvn(org.eclipse.jgit:org.eclipse.jgit.console) = 3.1.0.201310021548-r
-Provides:	mvn(org.eclipse.jgit:org.eclipse.jgit.java7) = 3.1.0.201310021548-r
-Provides:	mvn(org.eclipse.jgit:org.eclipse.jgit.pgm) = 3.1.0.201310021548-r
-Provides:	mvn(org.eclipse.jgit:org.eclipse.jgit.ui) = 3.1.0.201310021548-r
-Provides:	osgi(org.eclipse.jgit) = 3.1.0
-Provides:	osgi(org.eclipse.jgit.console) = 3.1.0
-Provides:	osgi(org.eclipse.jgit.java7) = 3.1.0
-Provides:	osgi(org.eclipse.jgit.pgm) = 3.1.0
-Provides:	osgi(org.eclipse.jgit.ui) = 3.1.0
+Requires:       jpackage-utils
 
-%description	-n jgit
-jgit bootstrap version.
+%description -n %{?scl_prefix}jgit-javadoc
+%{summary}.
 
-%files		-n jgit
-/usr/bin/jgit
-/usr/share/doc/jgit
-/usr/share/doc/jgit/LICENSE
-/usr/share/doc/jgit/README.md
-/usr/share/java/jgit
-/usr/share/java/jgit/console.jar
-/usr/share/java/jgit/java7.jar
-/usr/share/java/jgit/jgit.jar
-/usr/share/java/jgit/pgm.jar
-/usr/share/java/jgit/ui.jar
-/usr/share/maven-fragments/eclipse-jgit
-/usr/share/maven-poms/JPP-jgit-parent.pom
-/usr/share/maven-poms/JPP.jgit-console.pom
-/usr/share/maven-poms/JPP.jgit-java7.pom
-/usr/share/maven-poms/JPP.jgit-jgit.pom
-/usr/share/maven-poms/JPP.jgit-pgm.pom
-/usr/share/maven-poms/JPP.jgit-ui.pom
+%package -n     %{?scl_prefix}jgit
+Summary:        Java-based command line Git interface
 
-#------------------------------------------------------------------------
-%package	-n jgit-javadoc
-Version:	3.1.0
-Release:	1.0
-Summary:	jgit-javadoc bootstrap version
-Requires:	javapackages-bootstrap
-Requires:	jpackage-utils
-Provides:	jgit-javadoc = 3.1.0-1.0:2014.0
+Requires:       args4j >= 2.0.12
+Requires:       java >= 1.6.0
+Requires:       apache-commons-compress
+Requires:       xz-java >= 1.1-2
+Requires:       jpackage-utils
+Requires:       javaewah
 
-%description	-n jgit-javadoc
-jgit-javadoc bootstrap version.
+%description -n %{?scl_prefix}jgit
+Command line Git tool built entirely in Java.
 
-%files		-n jgit-javadoc
-/usr/share/doc/jgit-javadoc
-/usr/share/doc/jgit-javadoc/LICENSE
-/usr/share/doc/jgit-javadoc/README.md
-/usr/share/javadoc/jgit
-/usr/share/javadoc/jgit/apidocs
-/usr/share/javadoc/jgit/apidocs/allclasses-frame.html
-/usr/share/javadoc/jgit/apidocs/allclasses-noframe.html
-/usr/share/javadoc/jgit/apidocs/constant-values.html
-/usr/share/javadoc/jgit/apidocs/deprecated-list.html
-/usr/share/javadoc/jgit/apidocs/help-doc.html
-/usr/share/javadoc/jgit/apidocs/index-all.html
-/usr/share/javadoc/jgit/apidocs/index.html
-/usr/share/javadoc/jgit/apidocs/org
-/usr/share/javadoc/jgit/apidocs/org/eclipse
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/AddCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/AddNoteCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/ApplyCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/ApplyResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/ArchiveCommand.Format.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/ArchiveCommand.UnsupportedFormatException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/ArchiveCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/BlameCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/CheckoutCommand.Stage.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/CheckoutCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/CheckoutResult.Status.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/CheckoutResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/CherryPickCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/CherryPickResult.CherryPickStatus.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/CherryPickResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/CleanCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/CloneCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/CommitCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/CreateBranchCommand.SetupUpstreamMode.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/CreateBranchCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/DeleteBranchCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/DeleteTagCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/DiffCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/FetchCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/GarbageCollectCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/Git.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/GitCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/InitCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/ListBranchCommand.ListMode.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/ListBranchCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/ListNotesCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/ListTagCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/LogCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/LsRemoteCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/MergeCommand.FastForwardMode.Merge.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/MergeCommand.FastForwardMode.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/MergeCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/MergeResult.MergeStatus.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/MergeResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/NameRevCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/PullCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/PullResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/PushCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/RebaseCommand.Action.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/RebaseCommand.InteractiveHandler.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/RebaseCommand.Operation.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/RebaseCommand.Step.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/RebaseCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/RebaseResult.Status.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/RebaseResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/ReflogCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/RemoveNoteCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/RenameBranchCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/ResetCommand.ResetType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/ResetCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/RevertCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/RmCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/ShowNoteCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/StashApplyCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/StashCreateCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/StashDropCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/StashListCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/Status.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/StatusCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/SubmoduleAddCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/SubmoduleInitCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/SubmoduleStatusCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/SubmoduleSyncCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/SubmoduleUpdateCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/TagCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/TransportCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/TransportConfigCallback.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/AddCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/AddNoteCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/ApplyCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/ApplyResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/ArchiveCommand.Format.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/ArchiveCommand.UnsupportedFormatException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/ArchiveCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/BlameCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/CheckoutCommand.Stage.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/CheckoutCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/CheckoutResult.Status.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/CheckoutResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/CherryPickCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/CherryPickResult.CherryPickStatus.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/CherryPickResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/CleanCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/CloneCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/CommitCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/CreateBranchCommand.SetupUpstreamMode.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/CreateBranchCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/DeleteBranchCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/DeleteTagCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/DiffCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/FetchCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/GarbageCollectCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/Git.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/GitCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/InitCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/ListBranchCommand.ListMode.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/ListBranchCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/ListNotesCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/ListTagCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/LogCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/LsRemoteCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/MergeCommand.FastForwardMode.Merge.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/MergeCommand.FastForwardMode.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/MergeCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/MergeResult.MergeStatus.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/MergeResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/NameRevCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/PullCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/PullResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/PushCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/RebaseCommand.Action.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/RebaseCommand.InteractiveHandler.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/RebaseCommand.Operation.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/RebaseCommand.Step.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/RebaseCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/RebaseResult.Status.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/RebaseResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/ReflogCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/RemoveNoteCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/RenameBranchCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/ResetCommand.ResetType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/ResetCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/RevertCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/RmCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/ShowNoteCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/StashApplyCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/StashCreateCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/StashDropCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/StashListCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/Status.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/StatusCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/SubmoduleAddCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/SubmoduleInitCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/SubmoduleStatusCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/SubmoduleSyncCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/SubmoduleUpdateCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/TagCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/TransportCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/class-use/TransportConfigCallback.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/CanceledException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/CannotDeleteCurrentBranchException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/CheckoutConflictException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/ConcurrentRefUpdateException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/DetachedHeadException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/GitAPIException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/InvalidConfigurationException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/InvalidMergeHeadsException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/InvalidRefNameException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/InvalidRemoteException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/InvalidTagNameException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/JGitInternalException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/MultipleParentsNotAllowedException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/NoFilepatternException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/NoHeadException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/NoMessageException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/NotMergedException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/PatchApplyException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/PatchFormatException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/RefAlreadyExistsException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/RefNotFoundException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/StashApplyFailureException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/TransportException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/UnmergedPathsException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/WrongRepositoryStateException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/CanceledException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/CannotDeleteCurrentBranchException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/CheckoutConflictException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/ConcurrentRefUpdateException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/DetachedHeadException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/GitAPIException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/InvalidConfigurationException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/InvalidMergeHeadsException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/InvalidRefNameException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/InvalidRemoteException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/InvalidTagNameException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/JGitInternalException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/MultipleParentsNotAllowedException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/NoFilepatternException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/NoHeadException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/NoMessageException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/NotMergedException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/PatchApplyException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/PatchFormatException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/RefAlreadyExistsException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/RefNotFoundException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/StashApplyFailureException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/TransportException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/UnmergedPathsException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/class-use/WrongRepositoryStateException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/errors/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/api/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/awtui
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/awtui/AwtAuthenticator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/awtui/AwtCredentialsProvider.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/awtui/CommitGraphPane.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/awtui/UIText.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/awtui/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/awtui/class-use/AwtAuthenticator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/awtui/class-use/AwtCredentialsProvider.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/awtui/class-use/CommitGraphPane.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/awtui/class-use/UIText.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/awtui/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/awtui/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/awtui/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/awtui/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/blame
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/blame/BlameGenerator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/blame/BlameResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/blame/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/blame/class-use/BlameGenerator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/blame/class-use/BlameResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/blame/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/blame/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/blame/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/blame/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/console
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/console/ConsoleAuthenticator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/console/ConsoleCredentialsProvider.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/console/ConsoleText.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/console/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/console/class-use/ConsoleAuthenticator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/console/class-use/ConsoleCredentialsProvider.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/console/class-use/ConsoleText.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/console/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/console/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/console/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/console/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/ContentSource.Pair.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/ContentSource.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/DiffAlgorithm.SupportedAlgorithm.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/DiffAlgorithm.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/DiffConfig.RenameDetectionType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/DiffConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/DiffEntry.ChangeType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/DiffEntry.Side.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/DiffEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/DiffFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/Edit.Type.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/Edit.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/EditList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/HashedSequence.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/HashedSequenceComparator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/HashedSequencePair.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/HistogramDiff.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/LowLevelDiffAlgorithm.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/MyersDiff.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/PatchIdDiffFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/RawText.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/RawTextComparator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/RenameDetector.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/Sequence.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/SequenceComparator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/Subsequence.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/SubsequenceComparator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/ContentSource.Pair.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/ContentSource.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/DiffAlgorithm.SupportedAlgorithm.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/DiffAlgorithm.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/DiffConfig.RenameDetectionType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/DiffConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/DiffEntry.ChangeType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/DiffEntry.Side.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/DiffEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/DiffFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/Edit.Type.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/Edit.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/EditList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/HashedSequence.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/HashedSequenceComparator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/HashedSequencePair.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/HistogramDiff.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/LowLevelDiffAlgorithm.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/MyersDiff.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/PatchIdDiffFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/RawText.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/RawTextComparator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/RenameDetector.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/Sequence.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/SequenceComparator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/Subsequence.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/class-use/SubsequenceComparator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/diff/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/DirCache.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/DirCacheBuildIterator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/DirCacheBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/DirCacheCheckout.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/DirCacheEditor.DeletePath.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/DirCacheEditor.DeleteTree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/DirCacheEditor.PathEdit.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/DirCacheEditor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/DirCacheEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/DirCacheIterator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/DirCacheTree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/InvalidPathException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/class-use/DirCache.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/class-use/DirCacheBuildIterator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/class-use/DirCacheBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/class-use/DirCacheCheckout.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/class-use/DirCacheEditor.DeletePath.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/class-use/DirCacheEditor.DeleteTree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/class-use/DirCacheEditor.PathEdit.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/class-use/DirCacheEditor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/class-use/DirCacheEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/class-use/DirCacheIterator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/class-use/DirCacheTree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/class-use/InvalidPathException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/dircache/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/AmbiguousObjectException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/CheckoutConflictException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/CompoundException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/ConfigInvalidException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/CorruptObjectException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/EntryExistsException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/IncorrectObjectTypeException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/IndexWriteException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/InvalidObjectIdException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/InvalidPatternException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/LargeObjectException.ExceedsByteArrayLimit.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/LargeObjectException.ExceedsLimit.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/LargeObjectException.OutOfMemory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/LargeObjectException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/LockFailedException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/MissingBundlePrerequisiteException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/MissingObjectException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/NoClosingBracketException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/NoMergeBaseException.MergeBaseFailureReason.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/NoMergeBaseException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/NoRemoteRepositoryException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/NoWorkTreeException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/NotSupportedException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/ObjectWritingException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/PackInvalidException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/PackMismatchException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/PackProtocolException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/RemoteRepositoryException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/RepositoryNotFoundException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/RevWalkException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/RevisionSyntaxException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/StopWalkException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/StoredObjectRepresentationNotAvailableException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/SymlinksNotSupportedException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/TooLargeObjectInPackException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/TranslationBundleException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/TranslationBundleLoadingException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/TranslationStringMissingException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/TransportException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/UnmergedPathException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/UnpackException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/UnsupportedCredentialItem.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/AmbiguousObjectException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/CheckoutConflictException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/CompoundException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/ConfigInvalidException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/CorruptObjectException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/EntryExistsException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/IncorrectObjectTypeException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/IndexWriteException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/InvalidObjectIdException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/InvalidPatternException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/LargeObjectException.ExceedsByteArrayLimit.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/LargeObjectException.ExceedsLimit.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/LargeObjectException.OutOfMemory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/LargeObjectException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/LockFailedException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/MissingBundlePrerequisiteException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/MissingObjectException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/NoClosingBracketException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/NoMergeBaseException.MergeBaseFailureReason.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/NoMergeBaseException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/NoRemoteRepositoryException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/NoWorkTreeException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/NotSupportedException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/ObjectWritingException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/PackInvalidException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/PackMismatchException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/PackProtocolException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/RemoteRepositoryException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/RepositoryNotFoundException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/RevWalkException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/RevisionSyntaxException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/StopWalkException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/StoredObjectRepresentationNotAvailableException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/SymlinksNotSupportedException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/TooLargeObjectInPackException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/TranslationBundleException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/TranslationBundleLoadingException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/TranslationStringMissingException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/TransportException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/UnmergedPathException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/UnpackException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/class-use/UnsupportedCredentialItem.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/errors/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/ConfigChangedEvent.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/ConfigChangedListener.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/IndexChangedEvent.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/IndexChangedListener.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/ListenerHandle.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/ListenerList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/RefsChangedEvent.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/RefsChangedListener.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/RepositoryEvent.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/RepositoryListener.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/class-use/ConfigChangedEvent.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/class-use/ConfigChangedListener.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/class-use/IndexChangedEvent.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/class-use/IndexChangedListener.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/class-use/ListenerHandle.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/class-use/ListenerList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/class-use/RefsChangedEvent.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/class-use/RefsChangedListener.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/class-use/RepositoryEvent.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/class-use/RepositoryListener.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/events/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/fnmatch
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/fnmatch/FileNameMatcher.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/fnmatch/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/fnmatch/class-use/FileNameMatcher.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/fnmatch/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/fnmatch/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/fnmatch/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/fnmatch/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/ignore
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/ignore/IgnoreNode.MatchResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/ignore/IgnoreNode.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/ignore/IgnoreRule.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/ignore/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/ignore/class-use/IgnoreNode.MatchResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/ignore/class-use/IgnoreNode.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/ignore/class-use/IgnoreRule.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/ignore/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/ignore/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/ignore/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/ignore/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/JGitText.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/class-use/JGitText.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/BeforeDfsPackIndexLoadedEvent.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/BeforeDfsPackIndexLoadedListener.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsBlockCache.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsBlockCacheConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsCachedPack.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsGarbageCollector.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsInserter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsObjDatabase.PackSource.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsObjDatabase.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsPackCompactor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsPackDescription.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsPackFile.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsPackParser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsPacksChangedEvent.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsPacksChangedListener.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsReader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsReaderOptions.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsRefDatabase.RefCache.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsRefDatabase.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsRepository.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsRepositoryBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsRepositoryDescription.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/DfsText.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/InMemoryRepository.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/ReadableChannel.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/BeforeDfsPackIndexLoadedEvent.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/BeforeDfsPackIndexLoadedListener.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsBlockCache.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsBlockCacheConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsCachedPack.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsGarbageCollector.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsInserter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsObjDatabase.PackSource.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsObjDatabase.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsPackCompactor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsPackDescription.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsPackFile.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsPackParser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsPacksChangedEvent.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsPacksChangedListener.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsReader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsReaderOptions.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsRefDatabase.RefCache.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsRefDatabase.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsRepository.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsRepositoryBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsRepositoryDescription.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/DfsText.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/InMemoryRepository.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/class-use/ReadableChannel.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/dfs/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/BitmapIndexImpl.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/CheckoutEntryImpl.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/FileRepository.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/FileSnapshot.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/GC.RepoStatistics.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/GC.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/LockFile.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/ObjectDirectory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/ObjectDirectoryPackParser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/PackBitmapIndex.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/PackBitmapIndexBuilder.StoredEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/PackBitmapIndexBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/PackBitmapIndexRemapper.Entry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/PackBitmapIndexRemapper.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/PackBitmapIndexWriterV1.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/PackFile.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/PackIndex.MutableEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/PackIndex.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/PackIndexWriter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/PackLock.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/PackReverseIndex.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/RefDirectory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/ReflogEntryImpl.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/ReflogWriter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/UnpackedObject.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/WindowCache.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/BitmapIndexImpl.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/CheckoutEntryImpl.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/FileRepository.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/FileSnapshot.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/GC.RepoStatistics.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/GC.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/LockFile.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/ObjectDirectory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/ObjectDirectoryPackParser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/PackBitmapIndex.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/PackBitmapIndexBuilder.StoredEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/PackBitmapIndexBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/PackBitmapIndexRemapper.Entry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/PackBitmapIndexRemapper.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/PackBitmapIndexWriterV1.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/PackFile.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/PackIndex.MutableEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/PackIndex.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/PackIndexWriter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/PackLock.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/PackReverseIndex.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/RefDirectory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/ReflogEntryImpl.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/ReflogWriter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/UnpackedObject.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/class-use/WindowCache.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/file/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/BinaryDelta.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/CachedPack.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/DeltaEncoder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/DeltaIndex.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/DeltaStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/ObjectReuseAsIs.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/ObjectToPack.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/PackExt.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/PackOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/PackWriter.ObjectIdSet.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/PackWriter.PackingPhase.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/PackWriter.State.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/PackWriter.Statistics.ObjectType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/PackWriter.Statistics.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/PackWriter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/StoredObjectRepresentation.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/BinaryDelta.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/CachedPack.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/DeltaEncoder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/DeltaIndex.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/DeltaStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/ObjectReuseAsIs.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/ObjectToPack.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/PackExt.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/PackOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/PackWriter.ObjectIdSet.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/PackWriter.PackingPhase.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/PackWriter.State.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/PackWriter.Statistics.ObjectType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/PackWriter.Statistics.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/PackWriter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/class-use/StoredObjectRepresentation.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/internal/storage/pack/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/AbbreviatedObjectId.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/AnyObjectId.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/AsyncObjectLoaderQueue.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/AsyncObjectSizeQueue.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/AsyncOperation.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/BaseRepositoryBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/BatchRefUpdate.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/BatchingProgressMonitor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/BitmapIndex.Bitmap.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/BitmapIndex.BitmapBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/BitmapIndex.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/BitmapObject.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/BlobBasedConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/BranchConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/BranchTrackingStatus.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/CheckoutEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/CommitBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/Config.ConfigEnum.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/Config.SectionParser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/Config.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ConfigConstants.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/Constants.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/CoreConfig.AutoCRLF.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/CoreConfig.CheckStat.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/CoreConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/EmptyProgressMonitor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/FileMode.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/FileTreeEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/GitlinkTreeEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/IndexDiff.StageState.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/IndexDiff.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/InflaterCache.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/MutableObjectId.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/NullProgressMonitor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectChecker.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectDatabase.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectId.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectIdOwnerMap.Entry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectIdOwnerMap.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectIdRef.PeeledNonTag.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectIdRef.PeeledTag.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectIdRef.Unpeeled.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectIdRef.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectIdSubclassMap.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectInserter.Filter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectInserter.Formatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectInserter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectLoader.SmallObject.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectLoader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectReader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectStream.Filter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectStream.SmallStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ObjectStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/PersonIdent.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ProgressMonitor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/Ref.Storage.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/Ref.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/RefComparator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/RefDatabase.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/RefRename.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/RefUpdate.Result.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/RefUpdate.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/RefWriter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ReflogEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ReflogReader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/Repository.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/RepositoryBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/RepositoryCache.FileKey.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/RepositoryCache.Key.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/RepositoryCache.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/RepositoryState.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/StoredConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/SymbolicRef.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/SymlinkTreeEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/TagBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/TextProgressMonitor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/ThreadSafeProgressMonitor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/Tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/TreeEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/TreeFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/UserConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/AbbreviatedObjectId.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/AnyObjectId.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/AsyncObjectLoaderQueue.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/AsyncObjectSizeQueue.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/AsyncOperation.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/BaseRepositoryBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/BatchRefUpdate.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/BatchingProgressMonitor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/BitmapIndex.Bitmap.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/BitmapIndex.BitmapBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/BitmapIndex.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/BitmapObject.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/BlobBasedConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/BranchConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/BranchTrackingStatus.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/CheckoutEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/CommitBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/Config.ConfigEnum.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/Config.SectionParser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/Config.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ConfigConstants.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/Constants.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/CoreConfig.AutoCRLF.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/CoreConfig.CheckStat.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/CoreConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/EmptyProgressMonitor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/FileMode.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/FileTreeEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/GitlinkTreeEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/IndexDiff.StageState.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/IndexDiff.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/InflaterCache.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/MutableObjectId.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/NullProgressMonitor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectChecker.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectDatabase.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectId.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectIdOwnerMap.Entry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectIdOwnerMap.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectIdRef.PeeledNonTag.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectIdRef.PeeledTag.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectIdRef.Unpeeled.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectIdRef.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectIdSubclassMap.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectInserter.Filter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectInserter.Formatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectInserter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectLoader.SmallObject.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectLoader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectReader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectStream.Filter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectStream.SmallStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ObjectStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/PersonIdent.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ProgressMonitor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/Ref.Storage.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/Ref.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/RefComparator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/RefDatabase.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/RefRename.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/RefUpdate.Result.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/RefUpdate.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/RefWriter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ReflogEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ReflogReader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/Repository.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/RepositoryBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/RepositoryCache.FileKey.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/RepositoryCache.Key.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/RepositoryCache.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/RepositoryState.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/StoredConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/SymbolicRef.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/SymlinkTreeEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/TagBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/TextProgressMonitor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/ThreadSafeProgressMonitor.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/Tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/TreeEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/TreeFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/class-use/UserConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/lib/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/MergeAlgorithm.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/MergeChunk.ConflictState.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/MergeChunk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/MergeFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/MergeMessageFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/MergeResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/MergeStrategy.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/Merger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/RecursiveMerger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/ResolveMerger.MergeFailureReason.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/ResolveMerger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/SquashMessageFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/StrategyOneSided.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/StrategyRecursive.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/StrategyResolve.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/StrategySimpleTwoWayInCore.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/ThreeWayMergeStrategy.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/ThreeWayMerger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/MergeAlgorithm.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/MergeChunk.ConflictState.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/MergeChunk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/MergeFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/MergeMessageFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/MergeResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/MergeStrategy.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/Merger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/RecursiveMerger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/ResolveMerger.MergeFailureReason.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/ResolveMerger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/SquashMessageFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/StrategyOneSided.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/StrategyRecursive.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/StrategyResolve.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/StrategySimpleTwoWayInCore.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/ThreeWayMergeStrategy.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/class-use/ThreeWayMerger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/merge/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/nls
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/nls/NLS.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/nls/TranslationBundle.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/nls/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/nls/class-use/NLS.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/nls/class-use/TranslationBundle.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/nls/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/nls/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/nls/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/nls/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/DefaultNoteMerger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/Note.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/NoteMap.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/NoteMapMerger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/NoteMerger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/NotesMergeConflictException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/class-use/DefaultNoteMerger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/class-use/Note.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/class-use/NoteMap.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/class-use/NoteMapMerger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/class-use/NoteMerger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/class-use/NotesMergeConflictException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/notes/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/BinaryHunk.Type.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/BinaryHunk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/CombinedFileHeader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/CombinedHunkHeader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/FileHeader.PatchType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/FileHeader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/FormatError.Severity.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/FormatError.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/HunkHeader.OldImage.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/HunkHeader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/Patch.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/class-use/BinaryHunk.Type.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/class-use/BinaryHunk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/class-use/CombinedFileHeader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/class-use/CombinedHunkHeader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/class-use/FileHeader.PatchType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/class-use/FileHeader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/class-use/FormatError.Severity.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/class-use/FormatError.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/class-use/HunkHeader.OldImage.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/class-use/HunkHeader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/class-use/Patch.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/patch/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/AbstractPlotRenderer.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/PlotCommit.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/PlotCommitList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/PlotLane.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/PlotWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/class-use/AbstractPlotRenderer.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/class-use/PlotCommit.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/class-use/PlotCommitList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/class-use/PlotLane.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/class-use/PlotWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revplot/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/AsyncRevObjectQueue.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/DateRevQueue.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/DepthWalk.Commit.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/DepthWalk.ObjectWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/DepthWalk.RevWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/DepthWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/FIFORevQueue.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/FollowFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/FooterKey.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/FooterLine.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/LIFORevQueue.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/ObjectWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/RenameCallback.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/RevBlob.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/RevCommit.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/RevCommitList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/RevFlag.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/RevFlagSet.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/RevObject.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/RevObjectList.Block.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/RevObjectList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/RevSort.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/RevTag.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/RevTree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/RevWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/RevWalkUtils.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/AsyncRevObjectQueue.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/DateRevQueue.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/DepthWalk.Commit.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/DepthWalk.ObjectWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/DepthWalk.RevWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/DepthWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/FIFORevQueue.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/FollowFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/FooterKey.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/FooterLine.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/LIFORevQueue.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/ObjectWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/RenameCallback.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/RevBlob.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/RevCommit.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/RevCommitList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/RevFlag.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/RevFlagSet.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/RevObject.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/RevObjectList.Block.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/RevObjectList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/RevSort.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/RevTag.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/RevTree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/RevWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/class-use/RevWalkUtils.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/AndRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/AuthorRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/CommitTimeRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/CommitterRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/MaxCountRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/MessageRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/NotRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/OrRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/PatternMatchRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/RevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/RevFlagFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/SkipRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/SubStringRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/class-use/AndRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/class-use/AuthorRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/class-use/CommitTimeRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/class-use/CommitterRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/class-use/MaxCountRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/class-use/MessageRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/class-use/NotRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/class-use/OrRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/class-use/PatternMatchRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/class-use/RevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/class-use/RevFlagFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/class-use/SkipRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/class-use/SubStringRevFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/filter/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/revwalk/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/file
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/file/FileBasedConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/file/FileRepositoryBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/file/WindowCacheConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/file/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/file/class-use/FileBasedConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/file/class-use/FileRepositoryBuilder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/file/class-use/WindowCacheConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/file/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/file/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/file/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/file/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/pack
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/pack/PackConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/pack/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/pack/class-use/PackConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/pack/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/pack/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/pack/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/storage/pack/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/submodule
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/submodule/SubmoduleStatus.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/submodule/SubmoduleStatusType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/submodule/SubmoduleWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/submodule/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/submodule/class-use/SubmoduleStatus.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/submodule/class-use/SubmoduleStatusType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/submodule/class-use/SubmoduleWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/submodule/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/submodule/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/submodule/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/submodule/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/AbstractAdvertiseRefsHook.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/AdvertiseRefsHook.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/AdvertiseRefsHookChain.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/AmazonS3.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/BaseConnection.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/BasePackFetchConnection.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/BasePackPushConnection.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/BaseReceivePack.FirstLine.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/BaseReceivePack.ReceiveConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/BaseReceivePack.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/BundleWriter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/Connection.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/CredentialItem.CharArrayType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/CredentialItem.InformationalMessage.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/CredentialItem.Password.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/CredentialItem.StringType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/CredentialItem.Username.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/CredentialItem.YesNoType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/CredentialItem.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/CredentialsProvider.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/CredentialsProviderUserInfo.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/Daemon.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/DaemonClient.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/DaemonService.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/FetchConnection.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/FetchResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/HttpTransport.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/JschConfigSessionFactory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/JschSession.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/OpenSshConfig.Host.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/OpenSshConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/OperationResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PackParser.ObjectTypeAndSize.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PackParser.Source.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PackParser.UnresolvedDelta.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PackParser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PackTransport.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PackedObjectInfo.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PacketLineIn.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PacketLineOut.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PostReceiveHook.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PostReceiveHookChain.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PreReceiveHook.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PreReceiveHookChain.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PreUploadHook.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PreUploadHookChain.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PushConnection.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/PushResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/ReceiveCommand.Result.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/ReceiveCommand.Type.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/ReceiveCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/ReceivePack.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/RefAdvertiser.PacketLineOutRefAdvertiser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/RefAdvertiser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/RefFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/RefSpec.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/RemoteConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/RemoteRefUpdate.Status.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/RemoteRefUpdate.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/RemoteSession.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/RequestNotYetReadException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/ServiceMayNotContinueException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/SideBandOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/SshSessionFactory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/SshTransport.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/TagOpt.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/TcpTransport.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/TrackingRefUpdate.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/TransferConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/Transport.Operation.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/Transport.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/TransportAmazonS3.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/TransportBundle.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/TransportBundleStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/TransportGitSsh.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/TransportHttp.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/TransportProtocol.URIishField.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/TransportProtocol.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/TransportSftp.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/URIish.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/UploadPack.AdvertisedRequestValidator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/UploadPack.AnyRequestValidator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/UploadPack.FirstLine.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/UploadPack.ReachableCommitRequestValidator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/UploadPack.ReachableCommitTipRequestValidator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/UploadPack.RequestPolicy.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/UploadPack.RequestValidator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/UploadPack.TipRequestValidator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/UploadPack.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/UploadPackInternalServerErrorException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/UploadPackLogger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/UploadPackLoggerChain.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/UploadPackMayNotContinueException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/UsernamePasswordCredentialsProvider.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/WalkTransport.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/AbstractAdvertiseRefsHook.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/AdvertiseRefsHook.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/AdvertiseRefsHookChain.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/AmazonS3.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/BaseConnection.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/BasePackFetchConnection.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/BasePackPushConnection.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/BaseReceivePack.FirstLine.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/BaseReceivePack.ReceiveConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/BaseReceivePack.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/BundleWriter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/Connection.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/CredentialItem.CharArrayType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/CredentialItem.InformationalMessage.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/CredentialItem.Password.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/CredentialItem.StringType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/CredentialItem.Username.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/CredentialItem.YesNoType.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/CredentialItem.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/CredentialsProvider.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/CredentialsProviderUserInfo.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/Daemon.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/DaemonClient.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/DaemonService.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/FetchConnection.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/FetchResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/HttpTransport.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/JschConfigSessionFactory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/JschSession.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/OpenSshConfig.Host.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/OpenSshConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/OperationResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PackParser.ObjectTypeAndSize.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PackParser.Source.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PackParser.UnresolvedDelta.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PackParser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PackTransport.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PackedObjectInfo.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PacketLineIn.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PacketLineOut.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PostReceiveHook.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PostReceiveHookChain.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PreReceiveHook.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PreReceiveHookChain.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PreUploadHook.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PreUploadHookChain.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PushConnection.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/PushResult.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/ReceiveCommand.Result.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/ReceiveCommand.Type.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/ReceiveCommand.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/ReceivePack.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/RefAdvertiser.PacketLineOutRefAdvertiser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/RefAdvertiser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/RefFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/RefSpec.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/RemoteConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/RemoteRefUpdate.Status.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/RemoteRefUpdate.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/RemoteSession.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/RequestNotYetReadException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/ServiceMayNotContinueException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/SideBandOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/SshSessionFactory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/SshTransport.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/TagOpt.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/TcpTransport.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/TrackingRefUpdate.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/TransferConfig.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/Transport.Operation.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/Transport.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/TransportAmazonS3.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/TransportBundle.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/TransportBundleStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/TransportGitSsh.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/TransportHttp.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/TransportProtocol.URIishField.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/TransportProtocol.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/TransportSftp.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/URIish.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/UploadPack.AdvertisedRequestValidator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/UploadPack.AnyRequestValidator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/UploadPack.FirstLine.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/UploadPack.ReachableCommitRequestValidator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/UploadPack.ReachableCommitTipRequestValidator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/UploadPack.RequestPolicy.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/UploadPack.RequestValidator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/UploadPack.TipRequestValidator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/UploadPack.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/UploadPackInternalServerErrorException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/UploadPackLogger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/UploadPackLoggerChain.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/UploadPackMayNotContinueException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/UsernamePasswordCredentialsProvider.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/class-use/WalkTransport.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/FileResolver.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/ReceivePackFactory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/RepositoryResolver.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/ServiceNotAuthorizedException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/ServiceNotEnabledException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/UploadPackFactory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/class-use/FileResolver.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/class-use/ReceivePackFactory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/class-use/RepositoryResolver.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/class-use/ServiceNotAuthorizedException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/class-use/ServiceNotEnabledException.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/class-use/UploadPackFactory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/transport/resolver/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/AbstractTreeIterator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/CanonicalTreeParser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/EmptyTreeIterator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/FileTreeIterator.FileEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/FileTreeIterator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/NameConflictTreeWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/TreeWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/WorkingTreeIterator.Entry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/WorkingTreeIterator.MetadataDiff.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/WorkingTreeIterator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/WorkingTreeOptions.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/class-use/AbstractTreeIterator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/class-use/CanonicalTreeParser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/class-use/EmptyTreeIterator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/class-use/FileTreeIterator.FileEntry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/class-use/FileTreeIterator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/class-use/NameConflictTreeWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/class-use/TreeWalk.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/class-use/WorkingTreeIterator.Entry.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/class-use/WorkingTreeIterator.MetadataDiff.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/class-use/WorkingTreeIterator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/class-use/WorkingTreeOptions.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/AndTreeFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/IndexDiffFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/InterIndexDiffFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/NotIgnoredFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/NotTreeFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/OrTreeFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/PathFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/PathFilterGroup.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/PathSuffixFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/SkipWorkTreeFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/TreeFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/TreeFilterMarker.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/class-use/AndTreeFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/class-use/IndexDiffFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/class-use/InterIndexDiffFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/class-use/NotIgnoredFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/class-use/NotTreeFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/class-use/OrTreeFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/class-use/PathFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/class-use/PathFilterGroup.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/class-use/PathSuffixFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/class-use/SkipWorkTreeFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/class-use/TreeFilter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/class-use/TreeFilterMarker.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/filter/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/treewalk/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/Base64.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/BlockList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/CachedAuthenticator.CachedAuthentication.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/CachedAuthenticator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/ChangeIdUtil.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/FS.FSFactory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/FS.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/FS_POSIX.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/FS_POSIX_Java5.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/FS_POSIX_Java6.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/FS_Win32.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/FS_Win32_Cygwin.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/FileUtils.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/GitDateFormatter.Format.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/GitDateFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/GitDateParser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/HttpSupport.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/IO.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/IntList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/LongList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/MutableInteger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/NB.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/QuotedString.BourneStyle.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/QuotedString.BourneUserPathStyle.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/QuotedString.GitPathStyle.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/QuotedString.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/RawCharSequence.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/RawCharUtil.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/RawParseUtils.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/RawSubStringPattern.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/RefList.Builder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/RefList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/RefMap.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/RelativeDateFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/StringUtils.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/SystemReader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/TemporaryBuffer.Heap.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/TemporaryBuffer.LocalFile.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/TemporaryBuffer.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/Base64.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/BlockList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/CachedAuthenticator.CachedAuthentication.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/CachedAuthenticator.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/ChangeIdUtil.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/FS.FSFactory.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/FS.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/FS_POSIX.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/FS_POSIX_Java5.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/FS_POSIX_Java6.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/FS_Win32.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/FS_Win32_Cygwin.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/FileUtils.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/GitDateFormatter.Format.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/GitDateFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/GitDateParser.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/HttpSupport.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/IO.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/IntList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/LongList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/MutableInteger.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/NB.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/QuotedString.BourneStyle.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/QuotedString.BourneUserPathStyle.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/QuotedString.GitPathStyle.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/QuotedString.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/RawCharSequence.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/RawCharUtil.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/RawParseUtils.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/RawSubStringPattern.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/RefList.Builder.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/RefList.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/RefMap.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/RelativeDateFormatter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/StringUtils.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/SystemReader.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/TemporaryBuffer.Heap.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/TemporaryBuffer.LocalFile.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/class-use/TemporaryBuffer.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/AutoCRLFInputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/AutoCRLFOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/CountingOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/DisabledOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/EolCanonicalizingInputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/InterruptTimer.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/MessageWriter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/NullOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/SafeBufferedOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/StreamCopyThread.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/TeeInputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/ThrowingPrintWriter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/TimeoutInputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/TimeoutOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/UnionInputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/AutoCRLFInputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/AutoCRLFOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/CountingOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/DisabledOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/EolCanonicalizingInputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/InterruptTimer.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/MessageWriter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/NullOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/SafeBufferedOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/StreamCopyThread.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/TeeInputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/ThrowingPrintWriter.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/TimeoutInputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/TimeoutOutputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/class-use/UnionInputStream.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/io/package-use.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/package-frame.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/package-summary.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/package-tree.html
-/usr/share/javadoc/jgit/apidocs/org/eclipse/jgit/util/package-use.html
-/usr/share/javadoc/jgit/apidocs/overview-frame.html
-/usr/share/javadoc/jgit/apidocs/overview-summary.html
-/usr/share/javadoc/jgit/apidocs/overview-tree.html
-/usr/share/javadoc/jgit/apidocs/package-list
-/usr/share/javadoc/jgit/apidocs/resources
-/usr/share/javadoc/jgit/apidocs/resources/background.gif
-/usr/share/javadoc/jgit/apidocs/resources/tab.gif
-/usr/share/javadoc/jgit/apidocs/resources/titlebar.gif
-/usr/share/javadoc/jgit/apidocs/resources/titlebar_end.gif
-/usr/share/javadoc/jgit/apidocs/serialized-form.html
-/usr/share/javadoc/jgit/apidocs/stylesheet.css
-
-#------------------------------------------------------------------------
 %prep
+%setup -n jgit-%{version}.%{version_suffix} -q
+
+%patch0
+%patch1 -p1
+
+#javaevah change
+sed -i -e 's/javaewah/com.googlecode.javaewah/g' org.eclipse.jgit/META-INF/MANIFEST.MF
+find -name *.java -exec sed -i -e "s/javaewah/com.googlecode.javaewah/g" {} \;
+sed -i -e "s/javaewah/com.googlecode.javaewah.JavaEWAH/g" org.eclipse.jgit.packaging/org.eclipse.jgit.feature/feature.xml
+
+#don't try to get it from local *maven* repo, use tycho resolved one
+%pom_remove_dep com.googlecode.javaewah:JavaEWAH
+
+#those bundles don't compile with latest jetty
+%pom_disable_module org.eclipse.jgit.http.test
+%pom_disable_module org.eclipse.jgit.pgm.test
+%pom_disable_module org.eclipse.jgit.junit.http
+%pom_remove_dep : org.eclipse.jgit.packaging/org.eclipse.jgit.repository
+
+%pom_disable_module org.eclipse.jgit.target org.eclipse.jgit.packaging
+%pom_xpath_remove "pom:build/pom:pluginManagement/pom:plugins/pom:plugin/pom:configuration/pom:target" org.eclipse.jgit.packaging/pom.xml
+
+%pom_disable_module org.eclipse.jgit.java7.feature org.eclipse.jgit.packaging
+%pom_disable_module org.eclipse.jgit.source.feature org.eclipse.jgit.packaging
+%pom_disable_module org.eclipse.jgit.junit.feature org.eclipse.jgit.packaging
+%pom_disable_module org.eclipse.jgit.pgm.feature org.eclipse.jgit.packaging
+%pom_disable_module org.eclipse.jgit.pgm.source.feature org.eclipse.jgit.packaging
+
+# remove all features except for jgit
+sed -i -e '9,23d' org.eclipse.jgit.packaging/org.eclipse.jgit.repository/category.xml
+
+sed -i -e 's/\, multiValued = true//' org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Status.java
 
 %build
+%{?scl:%scl_maven_opts}
+mvn-rpmbuild -Dmaven.test.skip=true install
+mvn-rpmbuild -Dmaven.test.skip=true -f org.eclipse.jgit.packaging/pom.xml verify
 
 %install
-cd %{buildroot}
-rpm2cpio %{SOURCE0} | cpio -id
-rpm2cpio %{SOURCE1} | cpio -id
-rpm2cpio %{SOURCE2} | cpio -id
+install -d -m 755 %{buildroot}%{install_loc}
+
+
+mvn-rpmbuild org.fedoraproject:feclipse-maven-plugin:install  \
+               -DskipTychoVersionCheck \
+               -DsourceRepo=`pwd`/org.eclipse.jgit.packaging/org.eclipse.jgit.repository/target/repository \
+               -DtargetLocation=%{buildroot}%{install_loc}/eclipse
+
+pushd %{buildroot}%{install_loc}/eclipse/plugins
+    rm com.jcraft.jsch_*.jar
+    rm com.googlecode.javaewah.JavaEWAH_*.jar
+#to the future maintainers - dont forget to add those jars to the fix_jgit_sh.patch
+    ln -s %{_javadir}/args4j.jar
+    ln -s %{_javadir}/commons-compress.jar
+    ln -s %{_javadir}/xz-java.jar
+    ln -s %{_javadir}/javaewah/JavaEWAH.jar
+popd
+
+#giant hack - for some reason source bundle is in the repo, install the proper one
+cp org.eclipse.jgit/target/org.eclipse.jgit-*-r.jar %{buildroot}%{install_loc}/eclipse/plugins 
+
+# JARs
+install -d -m 0755 %{buildroot}%{_javadir}/jgit
+install -m 644 org.eclipse.jgit/target/org.eclipse.jgit-%{version}.%{version_suffix}.jar   %{buildroot}%{_javadir}/jgit/jgit.jar
+install -m 644 org.eclipse.jgit.ui/target/org.eclipse.jgit.ui-%{version}.%{version_suffix}.jar   %{buildroot}%{_javadir}/jgit/ui.jar
+install -m 644 org.eclipse.jgit.java7/target/org.eclipse.jgit.java7-%{version}.%{version_suffix}.jar   %{buildroot}%{_javadir}/jgit/java7.jar
+install -m 644 org.eclipse.jgit.console/target/org.eclipse.jgit.console-%{version}.%{version_suffix}.jar   %{buildroot}%{_javadir}/jgit/console.jar
+install -m 644 org.eclipse.jgit.pgm/target/org.eclipse.jgit.pgm-%{version}.%{version_suffix}.jar   %{buildroot}%{_javadir}/jgit/pgm.jar
+# Javadocs
+install -d -m 755 %{buildroot}%{_javadocdir}/jgit
+cp -rp org.eclipse.jgit/target/apidocs %{buildroot}%{_javadocdir}/jgit
+cp -rp org.eclipse.jgit.ui/target/apidocs %{buildroot}%{_javadocdir}/jgit
+cp -rp org.eclipse.jgit.console/target/apidocs %{buildroot}%{_javadocdir}/jgit
+# POM Files
+install -d -m 755 %{buildroot}%{_mavenpomdir}
+install -pm 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-jgit-parent.pom
+install -pm 644 org.eclipse.jgit/pom.xml %{buildroot}%{_mavenpomdir}/JPP.jgit-jgit.pom
+install -pm 644 org.eclipse.jgit.ui/pom.xml %{buildroot}%{_mavenpomdir}/JPP.jgit-ui.pom
+install -pm 644 org.eclipse.jgit.java7/pom.xml %{buildroot}%{_mavenpomdir}/JPP.jgit-java7.pom
+install -pm 644 org.eclipse.jgit.console/pom.xml %{buildroot}%{_mavenpomdir}/JPP.jgit-console.pom
+install -pm 644 org.eclipse.jgit.pgm/pom.xml %{buildroot}%{_mavenpomdir}/JPP.jgit-pgm.pom
+
+%add_maven_depmap JPP.jgit-jgit.pom jgit/jgit.jar
+%add_maven_depmap JPP.jgit-ui.pom jgit/ui.jar
+%add_maven_depmap JPP.jgit-java7.pom jgit/java7.jar
+%add_maven_depmap JPP.jgit-console.pom jgit/console.jar
+%add_maven_depmap JPP.jgit-pgm.pom jgit/pgm.jar
+%add_maven_depmap JPP-jgit-parent.pom
+# Binary
+install -dm 755 %{buildroot}%{_bindir}
+install -m 755 org.eclipse.jgit.pgm/jgit.sh %{buildroot}%{_bindir}/jgit
+
+%files
+%doc LICENSE 
+%doc README.md
+%{install_loc}
+
+%files -n %{?scl_prefix}jgit
+%{_bindir}/jgit
+%{_javadir}/jgit
+%{_mavendepmapfragdir}/%{name}
+%{_mavenpomdir}/JPP-jgit-parent.pom
+%{_mavenpomdir}/JPP.jgit*.pom
+%doc LICENSE 
+%doc README.md
+
+%files -n %{?scl_prefix}jgit-javadoc
+%{_javadocdir}/jgit
+%doc LICENSE 
+%doc README.md
+
+%changelog
+* Thu Oct 3 2013 Krzysztof Daniel <kdaniel@redhat.com> 3.1.0-1
+- Update to Kepler SR1.
+
+* Mon Aug 5 2013 Krzysztof Daniel <kdaniel@redhat.com> 3.0.0-7
+- Add missing jgit plugin back.
+
+* Tue Jul 16 2013 Krzysztof Daniel <kdaniel@redhat.com> 3.0.0-6
+- Change the build system to mvn-rpmbuild.
+- Use feclipse-maven-plugin to install things.
+- Bug 413163 - Incompatible change in latest args4j: multiValued removed from @Option
+
+* Fri Jul 5 2013 Neil Brian Guzman <nguzman@redhat.com> 3.0.0-5
+- Bump release
+
+* Tue Jun 25 2013 Neil Brian Guzman <nguzman@redhat.com> 3.0.0-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
+* Tue Jun 25 2013 Krzysztof Daniel <kdaniel@redhat.com> 3.0.0-3
+- Add missing R: javaewah to eclipse-jgit.
+
+* Tue Jun 25 2013 Krzysztof Daniel <kdaniel@redhat.com> 3.0.0-2
+- Move symlinks to eclipse-jgit.
+- Fix jgit classpath.
+
+* Thu Jun 20 2013 Neil Brian Guzman <nguzman@redhat.com> 3.0.0-1
+- Update to 3.0.0 release
+
+* Tue May 14 2013 Krzysztof Daniel <kdaniel@redhat.com> 2.3.1-2
+- Rebuild with latest icu4j.
+
+* Thu Feb 21 2013 Roland Grunberg <rgrunber@redhat.com> - 2.3.1-1
+- SCL-ize package.
+
+* Thu Feb 21 2013 Roland Grunberg <rgrunber@redhat.com> - 2.3.1-1
+- Update to 2.3.1 release.
+
+* Thu Feb 14 2013 Roland Grunberg <rgrunber@redhat.com> - 2.2.0-3
+- jgit subpackage should own its symlinked dependencies.
+
+* Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.2.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
+* Thu Jan 3 2013 Krzysztof Daniel <kdaniel@redhat.com> 2.2.0-1
+- Update to 2.2.0 release.
+
+* Mon Oct 1 2012 Alexander Kurtakov <akurtako@redhat.com> 2.1.0-1
+- Update to 2.1.0 release.
+
+* Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Mon Jul 2 2012 Alexander Kurtakov <akurtako@redhat.com> 2.0.0-1
+- Update to 2.0.0 upstream release.
+
+* Fri Apr 27 2012 Severin Gehwolf <sgehwolf@redhat.com> 1.3.0-3
+- Use eclipse-pdebuild over old pdebuild script.
+
+* Thu Apr 26 2012 Severin Gehwolf <sgehwolf@redhat.com> 1.3.0-2
+- Tweak .spec so as to avoid modifying to much of the .spec file
+- Fix upstream 1.3 release sources.
+
+* Fri Feb 17 2012 Andrew Robinson <arobinso@redhat.com> 1.3.0-1
+- Update to 1.3.0 upstream release.
+
+* Thu Jan 5 2012 Alexander Kurtakov <akurtako@redhat.com> 1.2.0-2
+- Build eclipse plugin first to not interfere with maven artifacts.
+
+* Thu Jan 5 2012 Alexander Kurtakov <akurtako@redhat.com> 1.2.0-1
+- Update to 1.2.0 release.
+
+* Fri Oct 28 2011 Andrew Robinson <arobinso@redhat.com> 1.1.0-4
+- Add jsch jar to the classpath.
+
+* Fri Oct 28 2011 Alexander Kurtakov <akurtako@redhat.com> 1.1.0-3
+- Drop libs subpackage and use the sh script directly instead of the shaded executable.
+- Install jars in _javadir subdir as per guidelines.
+
+* Thu Oct 27 2011 Andrew Robinson <arobinso@redhat.com> 1.1.0-2
+- Added Java libraries, javadocs and console binary subpackages.
+
+* Fri Sep 23 2011 Andrew Robinson <arobinso@redhat.com> 1.1.0-1
+- Update to upstream release 1.1.0.
+
+* Tue Jun 14 2011 Chris Aniszczyk <zx@redhat.com> 1.0.0-2
+- Update to upstream release 1.0.0.201106090707-r.
+
+* Tue Jun 07 2011 Chris Aniszczyk <zx@redhat.com> 1.0.0-1
+- Update to upstream release 1.0.0.
+
+* Tue May 03 2011 Chris Aniszczyk <zx@redhat.com> 0.12.1-1
+- Update to upstream release 0.12.1.
+
+* Tue Feb 22 2011 Chris Aniszczyk <zx@redhat.com> 0.11.3-1
+- Update to upstream release 0.11.3.
+
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.10.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
+* Wed Dec 22 2010 Chris Aniszczyk <zx@redhat.com> 0.10.1-1
+- Update to upstream release 0.10.1.
+
+* Thu Oct 7 2010 Chris Aniszczyk <zx@redhat.com> 0.9.3-1
+- Update to upstream release 0.9.3.
+
+* Wed Sep 15 2010 Severin Gehwolf <sgehwolf@redhat.com> 0.9.1-1
+- Update to upstream release 0.9.1.
+
+* Thu Aug 26 2010 Severin Gehwolf <sgehwolf at, redhat.com> 0.9.0-0.1.20100825git
+- Make release tag more readable (separate "0.1" and pre-release tag by ".").
+
+* Wed Aug 25 2010 Severin Gehwolf <sgehwolf at, redhat.com> 0.9.0-0.120100825git
+- Pre-release version of JGit 0.9.0
+
+* Fri Jun 25 2010 Severin Gehwolf <sgehwolf at, redhat.com> 0.8.4-2
+- Increase release number to make tagging work.
+
+* Wed Jun 23 2010 Severin Gehwolf <sgehwolf at, redhat.com> 0.8.4-1
+- Rebase to 0.8.4 release.
+
+* Mon Apr 12 2010 Jeff Johnston <jjohnstn@redhat.com> 0.7.1-1
+- Rebase to 0.7.1 release.
+
+* Tue Feb 9 2010 Alexander Kurtakov <akurtako@redhat.com> 0.6.0-0.1.git20100208
+- New git snapshot.
+
+* Thu Nov 5 2009 Alexander Kurtakov <akurtako@redhat.com> 0.6.0-0.1.git20091029
+- Correct release.
+
+* Thu Oct 29 2009 Alexander Kurtakov <akurtako@redhat.com> 0.6.0-0.git20091029.1
+- Initial package

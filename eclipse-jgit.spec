@@ -1,13 +1,13 @@
 %{?_javapackages_macros:%_javapackages_macros}
 %global install_loc    %{_datadir}/eclipse/dropins/jgit
-%global version_suffix 201310021548-r
+%global version_suffix 201312181205-r
 
 %{?scl:%scl_package eclipse-jgit}
 %{!?scl:%global pkg_name %{name}}
 
 
 Name:           %{?scl_prefix}eclipse-jgit
-Version:        3.1.0
+Version:        3.2.0
 Release:        1.0%{?dist}
 Summary:        Eclipse JGit
 
@@ -17,12 +17,13 @@ URL:            http://www.eclipse.org/egit/
 Source0:        http://git.eclipse.org/c/jgit/jgit.git/snapshot/jgit-%{version}.%{version_suffix}.tar.bz2
 Patch0:         fix_jgit_sh.patch
 Patch1:			eclipse-jgit-413163.patch
+Patch2:         fix_category.patch
 
 BuildArch: noarch
 
 BuildRequires: java-devel
 BuildRequires: %{?scl_prefix}eclipse-pde >= 1:3.5.0
-BuildRequires:  jpackage-utils
+BuildRequires:  javapackages-tools
 BuildRequires:  maven-local
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  maven-install-plugin
@@ -52,7 +53,7 @@ A pure Java implementation of the Git version control system.
 %package -n     %{?scl_prefix}jgit-javadoc
 Summary:        API documentation for %{pkg_name}
 
-Requires:       jpackage-utils
+Requires:       javapackages-tools
 
 %description -n %{?scl_prefix}jgit-javadoc
 %{summary}.
@@ -64,7 +65,7 @@ Requires:       args4j >= 2.0.12
 Requires:       java >= 1.6.0
 Requires:       apache-commons-compress
 Requires:       xz-java >= 1.1-2
-Requires:       jpackage-utils
+Requires:       javapackages-tools
 Requires:       javaewah
 
 %description -n %{?scl_prefix}jgit
@@ -75,8 +76,9 @@ Command line Git tool built entirely in Java.
 
 %patch0
 %patch1 -p1
+%patch2
 
-#javaevah change
+#javaewah change
 sed -i -e 's/javaewah/com.googlecode.javaewah/g' org.eclipse.jgit/META-INF/MANIFEST.MF
 find -name *.java -exec sed -i -e "s/javaewah/com.googlecode.javaewah/g" {} \;
 sed -i -e "s/javaewah/com.googlecode.javaewah.JavaEWAH/g" org.eclipse.jgit.packaging/org.eclipse.jgit.feature/feature.xml
@@ -88,19 +90,13 @@ sed -i -e "s/javaewah/com.googlecode.javaewah.JavaEWAH/g" org.eclipse.jgit.packa
 %pom_disable_module org.eclipse.jgit.http.test
 %pom_disable_module org.eclipse.jgit.pgm.test
 %pom_disable_module org.eclipse.jgit.junit.http
-%pom_remove_dep : org.eclipse.jgit.packaging/org.eclipse.jgit.repository
 
 %pom_disable_module org.eclipse.jgit.target org.eclipse.jgit.packaging
 %pom_xpath_remove "pom:build/pom:pluginManagement/pom:plugins/pom:plugin/pom:configuration/pom:target" org.eclipse.jgit.packaging/pom.xml
 
-%pom_disable_module org.eclipse.jgit.java7.feature org.eclipse.jgit.packaging
-%pom_disable_module org.eclipse.jgit.source.feature org.eclipse.jgit.packaging
 %pom_disable_module org.eclipse.jgit.junit.feature org.eclipse.jgit.packaging
 %pom_disable_module org.eclipse.jgit.pgm.feature org.eclipse.jgit.packaging
 %pom_disable_module org.eclipse.jgit.pgm.source.feature org.eclipse.jgit.packaging
-
-# remove all features except for jgit
-sed -i -e '9,23d' org.eclipse.jgit.packaging/org.eclipse.jgit.repository/category.xml
 
 sed -i -e 's/\, multiValued = true//' org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Status.java
 
@@ -112,9 +108,7 @@ mvn-rpmbuild -Dmaven.test.skip=true -f org.eclipse.jgit.packaging/pom.xml verify
 %install
 install -d -m 755 %{buildroot}%{install_loc}
 
-
 mvn-rpmbuild org.fedoraproject:feclipse-maven-plugin:install  \
-               -DskipTychoVersionCheck \
                -DsourceRepo=`pwd`/org.eclipse.jgit.packaging/org.eclipse.jgit.repository/target/repository \
                -DtargetLocation=%{buildroot}%{install_loc}/eclipse
 
@@ -182,6 +176,9 @@ install -m 755 org.eclipse.jgit.pgm/jgit.sh %{buildroot}%{_bindir}/jgit
 %doc README.md
 
 %changelog
+* Sun Dec 29 2013 Alexander Kurtakov <akurtako@redhat.com> 3.2.0-1
+- Update to 3.2.0.
+
 * Thu Oct 3 2013 Krzysztof Daniel <kdaniel@redhat.com> 3.1.0-1
 - Update to Kepler SR1.
 

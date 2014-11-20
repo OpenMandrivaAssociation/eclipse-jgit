@@ -1,22 +1,21 @@
 %{?_javapackages_macros:%_javapackages_macros}
 %global install_loc    %{_datadir}/eclipse/dropins/jgit
-%global version_suffix 201312181205-r
+%global version_suffix 201409260305-r
 
 %{?scl:%scl_package eclipse-jgit}
 %{!?scl:%global pkg_name %{name}}
 
 
 Name:           %{?scl_prefix}eclipse-jgit
-Version:        3.2.0
-Release:        1.1%{?dist}
+Version:        3.5.0
+Release:        1%{?dist}
 Summary:        Eclipse JGit
-
 
 License:        BSD
 URL:            http://www.eclipse.org/egit/
 Source0:        http://git.eclipse.org/c/jgit/jgit.git/snapshot/jgit-%{version}.%{version_suffix}.tar.bz2
 Patch0:         fix_jgit_sh.patch
-Patch1:			eclipse-jgit-413163.patch
+Patch1:         eclipse-jgit-413163.patch
 Patch2:         fix_category.patch
 
 BuildArch: noarch
@@ -25,14 +24,6 @@ BuildRequires: java-devel
 BuildRequires: %{?scl_prefix}eclipse-pde >= 1:3.5.0
 BuildRequires:  javapackages-tools
 BuildRequires:  maven-local
-BuildRequires:  maven-compiler-plugin
-BuildRequires:  maven-install-plugin
-BuildRequires:  maven-jar-plugin
-BuildRequires:  maven-javadoc-plugin
-BuildRequires:  maven-release-plugin
-BuildRequires:  maven-resources-plugin
-BuildRequires:  maven-surefire-plugin
-BuildRequires:  maven-surefire-provider-junit
 BuildRequires:  maven-shade-plugin
 BuildRequires:  tycho
 BuildRequires:  eclipse-equinox-osgi
@@ -43,9 +34,13 @@ BuildRequires:  xz-java >= 1.1-2
 BuildRequires:  javaewah
 BuildRequires:  mvn(org.codehaus.mojo:build-helper-maven-plugin)
 BuildRequires:  feclipse-maven-plugin >= 0.0.3
+BuildRequires:  jacoco-maven-plugin
 %{?scl:Requires: %scl_runtime}
 Requires: %{?scl_prefix}eclipse-platform >= 3.5.0
 Requires:  javaewah
+Requires:  args4j
+Requires:  apache-commons-compress
+Requires:  xz-java
 
 %description
 A pure Java implementation of the Git version control system.
@@ -53,19 +48,14 @@ A pure Java implementation of the Git version control system.
 %package -n     %{?scl_prefix}jgit-javadoc
 Summary:        API documentation for %{pkg_name}
 
-Requires:       javapackages-tools
-
 %description -n %{?scl_prefix}jgit-javadoc
 %{summary}.
 
 %package -n     %{?scl_prefix}jgit
 Summary:        Java-based command line Git interface
-
 Requires:       args4j >= 2.0.12
-Requires:       java >= 1.6.0
 Requires:       apache-commons-compress
 Requires:       xz-java >= 1.1-2
-Requires:       javapackages-tools
 Requires:       javaewah
 
 %description -n %{?scl_prefix}jgit
@@ -76,15 +66,14 @@ Command line Git tool built entirely in Java.
 
 %patch0
 %patch1 -p1
-%patch2
+%patch2 -p0 -b .sav
 
 #javaewah change
-sed -i -e 's/javaewah/com.googlecode.javaewah/g' org.eclipse.jgit/META-INF/MANIFEST.MF
-find -name *.java -exec sed -i -e "s/javaewah/com.googlecode.javaewah/g" {} \;
 sed -i -e "s/javaewah/com.googlecode.javaewah.JavaEWAH/g" org.eclipse.jgit.packaging/org.eclipse.jgit.feature/feature.xml
 
 #don't try to get it from local *maven* repo, use tycho resolved one
 %pom_remove_dep com.googlecode.javaewah:JavaEWAH
+%pom_remove_dep org.eclipse.jgit:org.eclipse.jgit.junit.http org.eclipse.jgit.packaging/org.eclipse.jgit.repository
 
 #those bundles don't compile with latest jetty
 %pom_disable_module org.eclipse.jgit.http.test
@@ -97,24 +86,29 @@ sed -i -e "s/javaewah/com.googlecode.javaewah.JavaEWAH/g" org.eclipse.jgit.packa
 %pom_disable_module org.eclipse.jgit.junit.feature org.eclipse.jgit.packaging
 %pom_disable_module org.eclipse.jgit.pgm.feature org.eclipse.jgit.packaging
 %pom_disable_module org.eclipse.jgit.pgm.source.feature org.eclipse.jgit.packaging
+%pom_disable_module org.eclipse.jgit.http.apache.feature org.eclipse.jgit.packaging
 
 sed -i -e 's/\, multiValued = true//' org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Status.java
+sed -i -e 's/\, multiValued = true//' org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Checkout.java
+sed -i -e 's/0.7.9,0.8.0/0.7.9,0.9.0/g' org.eclipse.jgit/META-INF/MANIFEST.MF
+sed -i -e 's/0.7.9,0.8.0/0.7.9,0.9.0/g' org.eclipse.jgit.test/META-INF/MANIFEST.MF
+
 
 %build
-%{?scl:%scl_maven_opts}
-mvn-rpmbuild -Dmaven.test.skip=true install
-mvn-rpmbuild -Dmaven.test.skip=true -f org.eclipse.jgit.packaging/pom.xml verify
+xmvn -o -Dmaven.repo.local=$(pwd)/.m2 -Dmaven.test.skip=true install
+xmvn -o -Dmaven.test.skip=true -f org.eclipse.jgit.packaging/pom.xml verify
 
 %install
 install -d -m 755 %{buildroot}%{install_loc}
 
-mvn-rpmbuild org.fedoraproject:feclipse-maven-plugin:install  \
+xmvn -o org.fedoraproject:feclipse-maven-plugin:install  \
                -DsourceRepo=`pwd`/org.eclipse.jgit.packaging/org.eclipse.jgit.repository/target/repository \
                -DtargetLocation=%{buildroot}%{install_loc}/eclipse
 
 pushd %{buildroot}%{install_loc}/eclipse/plugins
     rm com.jcraft.jsch_*.jar
     rm com.googlecode.javaewah.JavaEWAH_*.jar
+    rm org.apache.commons.compress_*.jar
 #to the future maintainers - dont forget to add those jars to the fix_jgit_sh.patch
     ln -s %{_javadir}/args4j.jar
     ln -s %{_javadir}/commons-compress.jar
@@ -161,12 +155,9 @@ install -m 755 org.eclipse.jgit.pgm/jgit.sh %{buildroot}%{_bindir}/jgit
 %doc README.md
 %{install_loc}
 
-%files -n %{?scl_prefix}jgit
+%files -n %{?scl_prefix}jgit -f .mfiles
 %{_bindir}/jgit
 %{_javadir}/jgit
-%{_mavendepmapfragdir}/%{name}
-%{_mavenpomdir}/JPP-jgit-parent.pom
-%{_mavenpomdir}/JPP.jgit*.pom
 %doc LICENSE 
 %doc README.md
 
@@ -176,6 +167,43 @@ install -m 755 org.eclipse.jgit.pgm/jgit.sh %{buildroot}%{_bindir}/jgit
 %doc README.md
 
 %changelog
+* Fri Oct 03 2014 Mat Booth <mat.booth@redhat.com> - 3.5.0-1
+- Update to latest upstream release 3.5.0
+
+* Thu Jun 26 2014 Mat Booth <mat.booth@redhat.com> - 3.4.1-1
+- Update to latest upstream release 3.4.1
+- Drop unnecessary BRs
+
+* Fri Jun 13 2014 Alexander Kurtakov <akurtako@redhat.com> 3.4.0-1
+- Update to upstream 3.4.0.
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.3.2-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Fri May 30 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.3.2-5
+- Use .mfiles geterated during build
+
+* Fri May 30 2014 Alexander Kurtakov <akurtako@redhat.com> 3.3.2-4
+- Add missing Rs ( rhbz #1079706 ).
+
+* Wed May 28 2014 Alexander Kurtakov <akurtako@redhat.com> 3.3.2-3
+- Rebuild for latest commons-compress.
+
+* Wed May 21 2014 Alexander Kurtakov <akurtako@redhat.com> 3.3.2-2
+- Fix compile against latest args4j.
+
+* Fri Apr 25 2014 Alexander Kurtakov <akurtako@redhat.com> 3.3.2-1
+- Update to 3.3.2.
+
+* Mon Mar 31 2014 Alexander Kurtakov <akurtako@redhat.com> 3.3.1-2
+- Remove bundled commons-compress.
+
+* Fri Mar 28 2014 Alexander Kurtakov <akurtako@redhat.com> 3.3.1-1
+- Update to 3.3.1.
+
+* Tue Mar 11 2014 Alexander Kurtakov <akurtako@redhat.com> 3.3.0-1
+- Update to 3.3.0.
+
 * Sun Dec 29 2013 Alexander Kurtakov <akurtako@redhat.com> 3.2.0-1
 - Update to 3.2.0.
 
@@ -309,3 +337,4 @@ install -m 755 org.eclipse.jgit.pgm/jgit.sh %{buildroot}%{_bindir}/jgit
 
 * Thu Oct 29 2009 Alexander Kurtakov <akurtako@redhat.com> 0.6.0-0.git20091029.1
 - Initial package
+

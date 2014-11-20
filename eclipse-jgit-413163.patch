@@ -1,4 +1,4 @@
-From db03b9787cb8c71d9c035a628ecae17581bcc390 Mon Sep 17 00:00:00 2001
+From 964fdccf525e3be7eaf77747a0326920a84e67e4 Mon Sep 17 00:00:00 2001
 From: Robin Stocker <robin@nibor.org>
 Date: Thu, 18 Jul 2013 19:08:29 +0200
 Subject: [PATCH] Fix compilation errors with args4j 2.0.23 and later
@@ -12,6 +12,7 @@ Bug: 413163
 Change-Id: I4bb951e9fab5f4ae4271bd7e11be799dc234ab80
 ---
  .../tst/org/eclipse/jgit/pgm/RmTest.java           | 80 ++++++++++++++++++++++
+ .../src/org/eclipse/jgit/pgm/Checkout.java         |  2 +-
  .../src/org/eclipse/jgit/pgm/Daemon.java           |  8 +--
  .../src/org/eclipse/jgit/pgm/Diff.java             |  2 +-
  .../src/org/eclipse/jgit/pgm/DiffTree.java         |  2 +-
@@ -19,9 +20,11 @@ Change-Id: I4bb951e9fab5f4ae4271bd7e11be799dc234ab80
  .../org/eclipse/jgit/pgm/RevWalkTextBuiltin.java   |  2 +-
  .../src/org/eclipse/jgit/pgm/Rm.java               |  4 +-
  .../src/org/eclipse/jgit/pgm/Show.java             |  2 +-
+ .../src/org/eclipse/jgit/pgm/Status.java           |  2 +-
  .../org/eclipse/jgit/pgm/debug/DiffAlgorithms.java |  4 +-
  .../eclipse/jgit/pgm/debug/TextHashFunctions.java  |  6 +-
- 10 files changed, 95 insertions(+), 17 deletions(-)
+ .../org/eclipse/jgit/pgm/opt/CmdLineParser.java    |  3 +-
+ 13 files changed, 98 insertions(+), 21 deletions(-)
  create mode 100644 org.eclipse.jgit.pgm.test/tst/org/eclipse/jgit/pgm/RmTest.java
 
 diff --git a/org.eclipse.jgit.pgm.test/tst/org/eclipse/jgit/pgm/RmTest.java b/org.eclipse.jgit.pgm.test/tst/org/eclipse/jgit/pgm/RmTest.java
@@ -110,6 +113,19 @@ index 0000000..00a1a9a
 +		assertFalse(b.exists());
 +	}
 +}
+diff --git a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Checkout.java b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Checkout.java
+index 8f911fd..e424bf7 100644
+--- a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Checkout.java
++++ b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Checkout.java
+@@ -75,7 +75,7 @@
+ 	private String name;
+ 
+ 	@Argument(index = 1)
+-	@Option(name = "--", metaVar = "metaVar_paths", multiValued = true, handler = StopOptionHandler.class)
++	@Option(name = "--", metaVar = "metaVar_paths", handler = StopOptionHandler.class)
+ 	private List<String> paths = new ArrayList<String>();
+ 
+ 	@Override
 diff --git a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Daemon.java b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Daemon.java
 index 04182d6..9ef8e49 100644
 --- a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Daemon.java
@@ -149,10 +165,10 @@ index 8f05168..3db8ce2 100644
  
  	// BEGIN -- Options shared with Log
 diff --git a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/DiffTree.java b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/DiffTree.java
-index 018bad0..ec23f11 100644
+index d89053c..90d7c06 100644
 --- a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/DiffTree.java
 +++ b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/DiffTree.java
-@@ -68,7 +68,7 @@ void tree_0(final AbstractTreeIterator c) {
+@@ -69,7 +69,7 @@ void tree_0(final AbstractTreeIterator c) {
  	@Argument(index = 1, metaVar = "metaVar_treeish", required = true)
  	private final List<AbstractTreeIterator> trees = new ArrayList<AbstractTreeIterator>();
  
@@ -162,10 +178,10 @@ index 018bad0..ec23f11 100644
  
  	@Override
 diff --git a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/LsTree.java b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/LsTree.java
-index 4fb560b..0110935 100644
+index 4b16ed8..4da8e09 100644
 --- a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/LsTree.java
 +++ b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/LsTree.java
-@@ -65,7 +65,7 @@
+@@ -67,7 +67,7 @@
  	private AbstractTreeIterator tree;
  
  	@Argument(index = 1)
@@ -175,10 +191,10 @@ index 4fb560b..0110935 100644
  
  	@Override
 diff --git a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/RevWalkTextBuiltin.java b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/RevWalkTextBuiltin.java
-index 4327403..ba0493a 100644
+index d6063c3..a223587 100644
 --- a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/RevWalkTextBuiltin.java
 +++ b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/RevWalkTextBuiltin.java
-@@ -124,7 +124,7 @@ void enableBoundary(final boolean on) {
+@@ -126,7 +126,7 @@ void enableBoundary(final boolean on) {
  	@Argument(index = 0, metaVar = "metaVar_commitish")
  	private final List<RevCommit> commits = new ArrayList<RevCommit>();
  
@@ -218,11 +234,24 @@ index a33a2d4..bcff628 100644
  	protected TreeFilter pathFilter = TreeFilter.ALL;
  
  	// BEGIN -- Options shared with Diff
+diff --git a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Status.java b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Status.java
+index 2ae950b..0bab32e 100644
+--- a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Status.java
++++ b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Status.java
+@@ -75,7 +75,7 @@
+ 	@Option(name = "--porcelain", usage = "usage_machineReadableOutput")
+ 	protected boolean porcelain;
+ 
+-	@Option(name = "--", metaVar = "metaVar_path", multiValued = true)
++	@Option(name = "--", metaVar = "metaVar_path")
+ 	protected List<String> filterPaths;
+ 
+ 	@Override
 diff --git a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/debug/DiffAlgorithms.java b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/debug/DiffAlgorithms.java
-index 3efe884..af3915b 100644
+index 91b5917..ed2818d 100644
 --- a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/debug/DiffAlgorithms.java
 +++ b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/debug/DiffAlgorithms.java
-@@ -109,13 +109,13 @@ DiffAlgorithm create() {
+@@ -111,13 +111,13 @@ DiffAlgorithm create() {
  	//
  	//
  
@@ -239,10 +268,10 @@ index 3efe884..af3915b 100644
  
  	@Option(name = "--count", metaVar = "LIMIT", usage = "Number of file revisions to be compared")
 diff --git a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/debug/TextHashFunctions.java b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/debug/TextHashFunctions.java
-index e43c9a6..274a89c 100644
+index 4205140..72425f1 100644
 --- a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/debug/TextHashFunctions.java
 +++ b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/debug/TextHashFunctions.java
-@@ -248,16 +248,16 @@ public int fold(int hash, int bits) {
+@@ -250,16 +250,16 @@ public int fold(int hash, int bits) {
  	//
  	//
  
@@ -262,17 +291,20 @@ index e43c9a6..274a89c 100644
  	List<File> gitDirs = new ArrayList<File>();
  
  	@Override
--- 
-1.8.3.1
---- a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/opt/CmdLineParser.java.bak	2013-10-03 10:47:24.000000000 +0200
-+++ b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/opt/CmdLineParser.java	2013-10-03 10:57:14.418101625 +0200
-@@ -184,8 +184,7 @@
+diff --git a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/opt/CmdLineParser.java b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/opt/CmdLineParser.java
+index 3f77aa6..b5d8d48 100644
+--- a/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/opt/CmdLineParser.java
++++ b/org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/opt/CmdLineParser.java
+@@ -184,8 +184,7 @@ public RevWalk getRevWalkGently() {
  	static class MyOptionDef extends OptionDef {
  
  		public MyOptionDef(OptionDef o) {
 -			super(o.usage(), o.metaVar(), o.required(), o.handler(), o
 -					.isMultiValued());
-+			super(o.usage(), o.metaVar(), o.required(), o.hidden(), o.handler(), o.isMultiValued());
++			super(o.usage(), o.metaVar(), o.required(), o.help(), o.hidden(), o.handler(), o.isMultiValued());
  		}
  
  		@Override
+-- 
+2.1.0
+

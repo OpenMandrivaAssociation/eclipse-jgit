@@ -1,46 +1,34 @@
 %{?_javapackages_macros:%_javapackages_macros}
-%global install_loc    %{_datadir}/eclipse/dropins/jgit
 %global version_suffix 201409260305-r
 
 %{?scl:%scl_package eclipse-jgit}
 %{!?scl:%global pkg_name %{name}}
 
-
 Name:           %{?scl_prefix}eclipse-jgit
 Version:        3.5.0
-Release:        1%{?dist}
+Release:        3.1
 Summary:        Eclipse JGit
-
+Group:		System/Libraries
 License:        BSD
 URL:            http://www.eclipse.org/egit/
 Source0:        http://git.eclipse.org/c/jgit/jgit.git/snapshot/jgit-%{version}.%{version_suffix}.tar.bz2
 Patch0:         fix_jgit_sh.patch
 Patch1:         eclipse-jgit-413163.patch
-Patch2:         fix_category.patch
 
 BuildArch: noarch
 
-BuildRequires: java-devel
-BuildRequires: %{?scl_prefix}eclipse-pde >= 1:3.5.0
-BuildRequires:  javapackages-tools
+BuildRequires:  %{?scl_prefix}eclipse-pde
 BuildRequires:  maven-local
 BuildRequires:  maven-shade-plugin
 BuildRequires:  tycho
-BuildRequires:  eclipse-equinox-osgi
-BuildRequires:  eclipse-platform
 BuildRequires:  args4j >= 2.0.12
 BuildRequires:  apache-commons-compress
 BuildRequires:  xz-java >= 1.1-2
 BuildRequires:  javaewah
-BuildRequires:  mvn(org.codehaus.mojo:build-helper-maven-plugin)
-BuildRequires:  feclipse-maven-plugin >= 0.0.3
 BuildRequires:  jacoco-maven-plugin
 %{?scl:Requires: %scl_runtime}
-Requires: %{?scl_prefix}eclipse-platform >= 3.5.0
-Requires:  javaewah
-Requires:  args4j
-Requires:  apache-commons-compress
-Requires:  xz-java
+Requires:       %{?scl_prefix}eclipse-platform
+Requires:       %{?scl_prefix}jgit = %{version}-%{release}
 
 %description
 A pure Java implementation of the Git version control system.
@@ -53,10 +41,6 @@ Summary:        API documentation for %{pkg_name}
 
 %package -n     %{?scl_prefix}jgit
 Summary:        Java-based command line Git interface
-Requires:       args4j >= 2.0.12
-Requires:       apache-commons-compress
-Requires:       xz-java >= 1.1-2
-Requires:       javaewah
 
 %description -n %{?scl_prefix}jgit
 Command line Git tool built entirely in Java.
@@ -66,107 +50,92 @@ Command line Git tool built entirely in Java.
 
 %patch0
 %patch1 -p1
-%patch2 -p0 -b .sav
 
 #javaewah change
-sed -i -e "s/javaewah/com.googlecode.javaewah.JavaEWAH/g" org.eclipse.jgit.packaging/org.eclipse.jgit.feature/feature.xml
+sed -i -e "s/javaewah/com.googlecode.javaewah.JavaEWAH/g" org.eclipse.jgit.packaging/org.eclipse.jgit{,.pgm}.feature/feature.xml
 
-#don't try to get it from local *maven* repo, use tycho resolved one
+# Don't try to get deps from local *maven* repo, use tycho resolved ones
 %pom_remove_dep com.googlecode.javaewah:JavaEWAH
-%pom_remove_dep org.eclipse.jgit:org.eclipse.jgit.junit.http org.eclipse.jgit.packaging/org.eclipse.jgit.repository
+for p in $(find org.eclipse.jgit.packaging -name pom.xml) ; do
+  grep -q dependencies $p && %pom_xpath_remove "pom:dependencies" $p
+done
 
 #those bundles don't compile with latest jetty
 %pom_disable_module org.eclipse.jgit.http.test
 %pom_disable_module org.eclipse.jgit.pgm.test
 %pom_disable_module org.eclipse.jgit.junit.http
+%pom_disable_module org.eclipse.jgit.junit.feature org.eclipse.jgit.packaging
 
+%pom_disable_module org.eclipse.jgit.ant.test
+%pom_disable_module org.eclipse.jgit.java7.test
+%pom_disable_module org.eclipse.jgit.test
+
+# Don't need target platform or repository modules with xmvn
 %pom_disable_module org.eclipse.jgit.target org.eclipse.jgit.packaging
+%pom_disable_module org.eclipse.jgit.repository org.eclipse.jgit.packaging
 %pom_xpath_remove "pom:build/pom:pluginManagement/pom:plugins/pom:plugin/pom:configuration/pom:target" org.eclipse.jgit.packaging/pom.xml
 
-%pom_disable_module org.eclipse.jgit.junit.feature org.eclipse.jgit.packaging
-%pom_disable_module org.eclipse.jgit.pgm.feature org.eclipse.jgit.packaging
+# Don't build source features
+%pom_disable_module org.eclipse.jgit.source.feature org.eclipse.jgit.packaging
 %pom_disable_module org.eclipse.jgit.pgm.source.feature org.eclipse.jgit.packaging
 %pom_disable_module org.eclipse.jgit.http.apache.feature org.eclipse.jgit.packaging
 
-sed -i -e 's/\, multiValued = true//' org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Status.java
-sed -i -e 's/\, multiValued = true//' org.eclipse.jgit.pgm/src/org/eclipse/jgit/pgm/Checkout.java
+# Relax version restriction for javaewah
 sed -i -e 's/0.7.9,0.8.0/0.7.9,0.9.0/g' org.eclipse.jgit/META-INF/MANIFEST.MF
 sed -i -e 's/0.7.9,0.8.0/0.7.9,0.9.0/g' org.eclipse.jgit.test/META-INF/MANIFEST.MF
 
+# Don't attach shell script artifact
+%pom_remove_plugin org.codehaus.mojo:build-helper-maven-plugin org.eclipse.jgit.pgm
 
 %build
-xmvn -o -Dmaven.repo.local=$(pwd)/.m2 -Dmaven.test.skip=true install
-xmvn -o -Dmaven.test.skip=true -f org.eclipse.jgit.packaging/pom.xml verify
+# Due to a current limitation of Tycho it is not possible to mix pom-first and
+# manifest-first builds in the same reactor build hence two separate invocations
 
-%install
-install -d -m 755 %{buildroot}%{install_loc}
+# First invocation installs jgit so the second invocation will succeed
+%mvn_build -f --post install:install \
+  -- -Dmaven.repo.local=$(pwd)/org.eclipse.jgit.packaging/.m2
 
-xmvn -o org.fedoraproject:feclipse-maven-plugin:install  \
-               -DsourceRepo=`pwd`/org.eclipse.jgit.packaging/org.eclipse.jgit.repository/target/repository \
-               -DtargetLocation=%{buildroot}%{install_loc}/eclipse
-
-pushd %{buildroot}%{install_loc}/eclipse/plugins
-    rm com.jcraft.jsch_*.jar
-    rm com.googlecode.javaewah.JavaEWAH_*.jar
-    rm org.apache.commons.compress_*.jar
-#to the future maintainers - dont forget to add those jars to the fix_jgit_sh.patch
-    ln -s %{_javadir}/args4j.jar
-    ln -s %{_javadir}/commons-compress.jar
-    ln -s %{_javadir}/xz-java.jar
-    ln -s %{_javadir}/javaewah/JavaEWAH.jar
+# Second invocation builds the eclipse features
+pushd org.eclipse.jgit.packaging
+%mvn_build -j -f -- -Dfedora.p2.repos=$(pwd)/.m2
 popd
 
-#giant hack - for some reason source bundle is in the repo, install the proper one
-cp org.eclipse.jgit/target/org.eclipse.jgit-*-r.jar %{buildroot}%{install_loc}/eclipse/plugins 
+%install
+# The macro does not allow us to change the "namespace" value, but here we want to
+# set it to something other than the SRPM name, so explode the macro
+xmvn-install -R .xmvn-reactor -n jgit -d %{buildroot}
+install -dm755 %{buildroot}%{_javadocdir}/jgit
+cp -pr .xmvn/apidocs/* %{buildroot}%{_javadocdir}/jgit
+echo '%{_javadocdir}/jgit' >>.mfiles-javadoc
 
-# JARs
-install -d -m 0755 %{buildroot}%{_javadir}/jgit
-install -m 644 org.eclipse.jgit/target/org.eclipse.jgit-%{version}.%{version_suffix}.jar   %{buildroot}%{_javadir}/jgit/jgit.jar
-install -m 644 org.eclipse.jgit.ui/target/org.eclipse.jgit.ui-%{version}.%{version_suffix}.jar   %{buildroot}%{_javadir}/jgit/ui.jar
-install -m 644 org.eclipse.jgit.java7/target/org.eclipse.jgit.java7-%{version}.%{version_suffix}.jar   %{buildroot}%{_javadir}/jgit/java7.jar
-install -m 644 org.eclipse.jgit.console/target/org.eclipse.jgit.console-%{version}.%{version_suffix}.jar   %{buildroot}%{_javadir}/jgit/console.jar
-install -m 644 org.eclipse.jgit.pgm/target/org.eclipse.jgit.pgm-%{version}.%{version_suffix}.jar   %{buildroot}%{_javadir}/jgit/pgm.jar
-# Javadocs
-install -d -m 755 %{buildroot}%{_javadocdir}/jgit
-cp -rp org.eclipse.jgit/target/apidocs %{buildroot}%{_javadocdir}/jgit
-cp -rp org.eclipse.jgit.ui/target/apidocs %{buildroot}%{_javadocdir}/jgit
-cp -rp org.eclipse.jgit.console/target/apidocs %{buildroot}%{_javadocdir}/jgit
-# POM Files
-install -d -m 755 %{buildroot}%{_mavenpomdir}
-install -pm 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-jgit-parent.pom
-install -pm 644 org.eclipse.jgit/pom.xml %{buildroot}%{_mavenpomdir}/JPP.jgit-jgit.pom
-install -pm 644 org.eclipse.jgit.ui/pom.xml %{buildroot}%{_mavenpomdir}/JPP.jgit-ui.pom
-install -pm 644 org.eclipse.jgit.java7/pom.xml %{buildroot}%{_mavenpomdir}/JPP.jgit-java7.pom
-install -pm 644 org.eclipse.jgit.console/pom.xml %{buildroot}%{_mavenpomdir}/JPP.jgit-console.pom
-install -pm 644 org.eclipse.jgit.pgm/pom.xml %{buildroot}%{_mavenpomdir}/JPP.jgit-pgm.pom
+pushd org.eclipse.jgit.packaging
+%mvn_install
+popd
 
-%add_maven_depmap JPP.jgit-jgit.pom jgit/jgit.jar
-%add_maven_depmap JPP.jgit-ui.pom jgit/ui.jar
-%add_maven_depmap JPP.jgit-java7.pom jgit/java7.jar
-%add_maven_depmap JPP.jgit-console.pom jgit/console.jar
-%add_maven_depmap JPP.jgit-pgm.pom jgit/pgm.jar
-%add_maven_depmap JPP-jgit-parent.pom
 # Binary
 install -dm 755 %{buildroot}%{_bindir}
 install -m 755 org.eclipse.jgit.pgm/jgit.sh %{buildroot}%{_bindir}/jgit
 
-%files
-%doc LICENSE 
-%doc README.md
-%{install_loc}
+%files -f org.eclipse.jgit.packaging/.mfiles
+%doc LICENSE README.md
 
-%files -n %{?scl_prefix}jgit -f .mfiles
+%files -n jgit -f .mfiles
 %{_bindir}/jgit
-%{_javadir}/jgit
-%doc LICENSE 
-%doc README.md
+%dir %{_javadir}/jgit
+%dir %{_mavenpomdir}/jgit
+%doc LICENSE README.md
 
-%files -n %{?scl_prefix}jgit-javadoc
-%{_javadocdir}/jgit
-%doc LICENSE 
-%doc README.md
+%files -n jgit-javadoc -f .mfiles-javadoc
+%doc LICENSE README.md
 
 %changelog
+* Tue Nov 11 2014 Mat Booth <mat.booth@redhat.com> - 3.5.0-3
+- Rebuild to generate correct symlinks
+- Drop unnecessary requires (now autogenerated by xmvn)
+
+* Fri Nov 07 2014 Mat Booth <mat.booth@redhat.com> - 3.5.0-2
+- Build/install eclipse plugin with mvn_build/mvn_install
+
 * Fri Oct 03 2014 Mat Booth <mat.booth@redhat.com> - 3.5.0-1
 - Update to latest upstream release 3.5.0
 

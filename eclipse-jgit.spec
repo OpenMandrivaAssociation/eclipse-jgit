@@ -18,6 +18,7 @@ Patch1:         eclipse-jgit-413163.patch
 BuildArch: noarch
 
 BuildRequires:  %{?scl_prefix}eclipse-pde
+BuildRequires:  eclipse-license
 BuildRequires:  jsch
 BuildRequires:  maven-local
 BuildRequires:  maven-shade-plugin

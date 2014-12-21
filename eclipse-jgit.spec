@@ -1,14 +1,14 @@
 %{?_javapackages_macros:%_javapackages_macros}
-%global version_suffix 201409260305-r
+%global version_suffix 201412180710-r
 
 %{?scl:%scl_package eclipse-jgit}
 %{!?scl:%global pkg_name %{name}}
 
 Name:           %{?scl_prefix}eclipse-jgit
-Version:        3.5.0
-Release:        3.1
+Version:        3.5.3
+Release:        1.1
 Summary:        Eclipse JGit
-Group:		System/Libraries
+Group:		Development/Java
 License:        BSD
 URL:            http://www.eclipse.org/egit/
 Source0:        http://git.eclipse.org/c/jgit/jgit.git/snapshot/jgit-%{version}.%{version_suffix}.tar.bz2

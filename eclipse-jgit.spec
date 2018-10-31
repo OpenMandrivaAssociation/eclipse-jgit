@@ -6,7 +6,7 @@
 
 Name:           %{?scl_prefix}eclipse-jgit
 Version:        3.5.3
-Release:        1.2
+Release:        1.3
 Summary:        Eclipse JGit
 Group:		Development/Java
 License:        BSD

@@ -10,7 +10,7 @@ Release:        1.3
 Summary:        Eclipse JGit
 Group:		Development/Java
 License:        BSD
-URL:            http://www.eclipse.org/egit/
+URL:            https://www.eclipse.org/egit/
 Source0:        http://git.eclipse.org/c/jgit/jgit.git/snapshot/jgit-%{version}.%{version_suffix}.tar.bz2
 Patch0:         fix_jgit_sh.patch
 Patch1:         eclipse-jgit-413163.patch
